@@ -30,6 +30,24 @@ const dummyTransactions = [
 ];
 
 let transactions = dummyTransactions;
+//Add transaction
+function addTransaction(e) {
+  e.preventDefault();
+  if (text.value.trim() === '' || amount.value.trim() === '') {
+    alert('Plaese add a text and amount');
+  } else {
+    const transaction = {
+      id: generateID(),
+      text: text.value,
+      amount: amount.value
+    };
+    console.log(transaction);
+  }
+}
+//generate random id
+function generateID() {
+  return Math.floor(Math.random() * 100000000);
+}
 
 //Add transactions to DOM list
 function addTransactionDOM(transaction) {
@@ -46,11 +64,21 @@ function addTransactionDOM(transaction) {
   `;
   list.appendChild(item);
 }
-//upadye the balance income and expense
+//update the balance income and expense
 function updateValues() {
   const amounts = transactions.map(transaction => transaction.amount);
   const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-  console.log(total);
+  const income = amounts
+    .filter(item => item > 0)
+    .reduce((acc, item) => (acc += item), 0)
+    .toFixed(2);
+  const expense = (
+    amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) *
+    -1
+  ).toFixed(2);
+  balance.innerText = `$${total}`;
+  money_plus.innerText = `$${income}`;
+  money_minus.innerText = `$${expense}`;
 }
 
 //Init app
@@ -60,3 +88,4 @@ function init() {
   updateValues();
 }
 init();
+form.addEventListener('submit', addTransaction);
